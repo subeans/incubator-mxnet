@@ -143,8 +143,9 @@ def train():
         if save_model_prefix:
             module.save_params('%s-%04d.params'%(save_model_prefix, epoch))
 
-
-        for _ in range(int(epoch_size/args.t_max)):
+        print("Iter :" + str(epoch_size/args.t_max))
+        tic_20 = time.time()
+        for test_index in range(int(epoch_size/args.t_max)):
             tic = time.time()
             # clear gradients
             for exe in module._exec_group.grad_arrays:
@@ -182,19 +183,23 @@ def train():
                 out_acts_tile=np.tile(-np.log(out_acts + 1e-7),(1, dataiter.act_dim))
                 module.backward([mx.nd.array(out_acts_tile*adv), h])
 
-                print('pi', pi[0].asnumpy())
-                print('h', h[0].asnumpy())
+                #print('pi', pi[0].asnumpy())
+                #print('h', h[0].asnumpy())
                 err += (adv**2).mean()
                 score += r[i]
                 final_score *= (1-D[i])
                 final_score += score * D[i]
                 score *= 1-D[i]
                 T += D[i].sum()
-
+            
             module.update()
-            logging.info('fps: %f err: %f score: %f final: %f T: %f'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T))
-            print(score.squeeze())
-            print(final_score.squeeze())
+            
+            if test_index%20==0:
+                iter_time = time.time() - tic_20
+                tic_20 = time.time()
+                logging.info('fps: %f err: %f score: %f final: %f T: %f Epoch: %s Iter: %s Time: %s'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T, epoch, test_index, iter_time))
+            #print(score.squeeze())
+            #print(final_score.squeeze())
 
 def test():
     log_config()
