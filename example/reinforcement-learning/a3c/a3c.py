@@ -143,9 +143,9 @@ def train():
         if save_model_prefix:
             module.save_params('%s-%04d.params'%(save_model_prefix, epoch))
 
-        print("Iter :" + str(epoch_size/args.t_max))
+        print("IterNum in worker:" + str(epoch_size/args.t_max))
         tic_20 = time.time()
-        for test_index in range(int(epoch_size/args.t_max)):
+        for iter_w in range(int(epoch_size/args.t_max)):
             tic = time.time()
             # clear gradients
             for exe in module._exec_group.grad_arrays:
@@ -194,10 +194,10 @@ def train():
             
             module.update()
             
-            if test_index%20==0:
+            if iter_w%20==0:
                 iter_time = time.time() - tic_20
                 tic_20 = time.time()
-                logging.info('fps: %f err: %f score: %f final: %f T: %f Epoch: %s Iter: %s Time: %s'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T, epoch, test_index, iter_time))
+                logging.info('fps: %f err: %f score: %f final: %f T: %f Epoch: %s Iter: %s 20Iter_Time: %s'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T, epoch, iter_w, iter_time))
             #print(score.squeeze())
             #print(final_score.squeeze())
 
