@@ -139,7 +139,9 @@ def train():
     dataiter.reset()
     score = np.zeros((args.batch_size, 1))
     final_score = np.zeros((args.batch_size, 1))
+   
     for epoch in range(args.num_epochs):
+        epoch_time=time.time()
         if save_model_prefix:
             module.save_params('%s-%04d.params'%(save_model_prefix, epoch))
 
@@ -193,13 +195,16 @@ def train():
                 T += D[i].sum()
             
             module.update()
-            
+        
             if iter_w%20==0:
                 iter_time = time.time() - tic_20
                 tic_20 = time.time()
-                logging.info('fps: %f err: %f score: %f final: %f T: %f Epoch: %s Iter: %s 20Iter_Time: %s'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T, epoch, iter_w, iter_time))
+                logging.info('fps: %f err: %f score: %f final: %f T: %f Epoch: %s Iter: %s 20Iter_Time: %s'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T, epoch, iter_w,iter_time))
             #print(score.squeeze())
             #print(final_score.squeeze())
+       e_time=time.time()-epoch_time
+       logging.info('Epoch_time : %s '%(e_time))
+       
 
 def test():
     log_config()
