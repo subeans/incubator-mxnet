@@ -146,6 +146,7 @@ def train():
             module.save_params('%s-%04d.params'%(save_model_prefix, epoch))
 
         print("IterNum in worker:" + str(epoch_size/args.t_max))
+        print("Num Worker :" + kv.num_workers )
         tic_20 = time.time()
         for iter_w in range(int(epoch_size/args.t_max)):
             tic = time.time()
