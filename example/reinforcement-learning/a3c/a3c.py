@@ -146,7 +146,7 @@ def train():
             module.save_params('%s-%04d.params'%(save_model_prefix, epoch))
 
         print("IterNum in worker:" + str(epoch_size/args.t_max))
-        print("Num Worker :" + kv.num_workers )
+        print("Num Worker :" + str(kv.num_workers) )
         tic_20 = time.time()
         for iter_w in range(int(epoch_size/args.t_max)):
             tic = time.time()
@@ -203,8 +203,8 @@ def train():
                 logging.info('fps: %f err: %f score: %f final: %f T: %f Epoch: %s Iter: %s 20Iter_Time: %s'%(args.batch_size/(time.time()-tic), err/args.t_max, score.mean(), final_score.mean(), T, epoch, iter_w,iter_time))
             #print(score.squeeze())
             #print(final_score.squeeze())
-       e_time=time.time()-epoch_time
-       logging.info('Epoch_time : %s '%(e_time))
+        e_time=time.time()-epoch_time
+        logging.info('Epoch_time : %s '%(e_time))
        
 
 def test():
